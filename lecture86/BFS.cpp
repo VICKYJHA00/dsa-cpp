@@ -52,6 +52,6 @@ int main(){
     g.addEdge(0,4,0);
     g.addEdge(1,2,0);
     g.addEdge(1,3,0);
-    g.print();
+    // g.print()
     g.bfs(0);
 }
