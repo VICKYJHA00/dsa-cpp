@@ -53,7 +53,6 @@ int main(){
             g.topoSort(i,st,visited); // step 1: topological sort
         }
     }
-
     // step 2: transpose is already created during edge addition
     visited.clear();
     // step 3: do dfs according to topological order on transposed graph
