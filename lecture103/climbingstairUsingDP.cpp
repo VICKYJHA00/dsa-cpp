@@ -68,6 +68,6 @@ int main(){
  vector<int> cost = {10,15,20};
 //   cout<<climbstair(cost);
     // cout<<climbstair2(cost);
-    cout<<climbstair3(cost);
+    cout<<climbstair3(cost); 
   return 0;
 }
