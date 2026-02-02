@@ -22,4 +22,4 @@ int main(){
     vector<int> nums = {2,1,4,9};
     cout<<maximumSumOfNonAdjacent(nums)<<endl;
     return 0;
-}
+}// force change
