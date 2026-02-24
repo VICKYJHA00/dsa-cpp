@@ -1,0 +1,315 @@
+---
+
+# 🧠 Painting Fence Problem (DP)
+
+## 📌 Problem Summary
+
+* **n** = number of posts
+* **k** = number of colors
+* Constraint → **No more than 2 consecutive posts can have the same color**
+* Return answer **mod M** (usually `1e9+7`)
+
+---
+
+## 1️⃣ Concept Explanation (Simple Words)
+
+We want to count ways to paint fence posts such that:
+
+* We can repeat colors
+* But **3 same colors in a row is NOT allowed**
+
+💡 Key Thinking:
+For the nth post, only two possibilities:
+
+1. Last two posts are **different**
+2. Last two posts are **same**
+
+From this logic, we derive:
+
+[
+solve(n) = (solve(n-1) + solve(n-2)) * (k-1)
+]
+
+---
+
+## 2️⃣ Why This Concept is Important
+
+This problem teaches:
+
+* How to derive a **recurrence relation**
+* Breaking into **valid states**
+* Converting recursion → memo → tabulation → space optimization
+* Classic **DP pattern used in interviews**
+
+⚡ Frequently asked in:
+
+* Amazon
+* Microsoft
+* Google (variation)
+* Flipkart
+* Product companies
+
+---
+
+## 3️⃣ Brute Force Approach 🚨
+
+### Idea:
+
+* Try all color combinations.
+* Reject those with 3 same consecutive colors.
+
+### Complexity:
+
+* Each post → k choices
+* Total combinations → **O(k^n)**
+
+❌ Exponential
+❌ Not feasible for large n
+
+---
+
+## 4️⃣ Optimized Approach (Dynamic Programming)
+
+---
+
+## 🧩 Step 1: Define DP
+
+Let:
+
+```
+dp[i] = ways to paint i posts
+```
+
+---
+
+## 🧱 Base Cases
+
+```
+dp[1] = k
+dp[2] = k * k
+```
+
+Why?
+
+* For 2 posts:
+
+  * Same color → k ways
+  * Different color → k * (k-1)
+  * Total = k + k(k-1) = k²
+
+---
+
+## 🔁 Recurrence Relation
+
+For i ≥ 3:
+
+[
+dp[i] = (dp[i-1] + dp[i-2]) * (k-1)
+]
+
+Reason:
+
+* If last two different → dp[i-1] * (k-1)
+* If last two same → dp[i-2] * (k-1)
+
+Combine:
+
+[
+(dp[i-1] + dp[i-2]) * (k-1)
+]
+
+---
+
+## 🚀 Approaches
+
+---
+
+### 🔹 1. Recursion + Memoization (Top Down)
+
+* Store computed values in dp array.
+
+Time: **O(n)**
+Space: **O(n)** (array + recursion stack)
+
+---
+
+### 🔹 2. Tabulation (Bottom Up)
+
+Iteratively build dp array.
+
+Time: **O(n)**
+Space: **O(n)**
+
+---
+
+### 🔹 3. Space Optimized (Best Approach)
+
+Since only last 2 values needed:
+
+```
+prev2 = dp[i-2]
+prev1 = dp[i-1]
+```
+
+Time: **O(n)**
+Space: **O(1)** ✅
+
+---
+
+# 📊 Time & Space Comparison
+
+| Approach        | Time   | Space  |
+| --------------- | ------ | ------ |
+| Brute Force     | O(k^n) | O(n)   |
+| Memoization     | O(n)   | O(n)   |
+| Tabulation      | O(n)   | O(n)   |
+| Space Optimized | O(n)   | O(1) ✅ |
+
+---
+
+# 🧾 Code Templates
+
+---
+
+## 🟢 C++ (Space Optimized)
+
+```cpp
+long long countWays(int n, int k) {
+    if (n == 1) return k;
+    if (n == 2) return (long long)k * k;
+
+    long long prev2 = k;
+    long long prev1 = (long long)k * k;
+    long long mod = 1e9 + 7;
+
+    for (int i = 3; i <= n; i++) {
+        long long ans = ((prev1 + prev2) % mod * (k - 1)) % mod;
+        prev2 = prev1;
+        prev1 = ans;
+    }
+
+    return prev1;
+}
+```
+
+---
+
+## 🟡 Java (Space Optimized)
+
+```java
+public long countWays(int n, int k) {
+    if (n == 1) return k;
+    if (n == 2) return (long)k * k;
+
+    long prev2 = k;
+    long prev1 = (long)k * k;
+    long mod = 1000000007;
+
+    for (int i = 3; i <= n; i++) {
+        long ans = ((prev1 + prev2) % mod * (k - 1)) % mod;
+        prev2 = prev1;
+        prev1 = ans;
+    }
+
+    return prev1;
+}
+```
+
+---
+
+## 🔵 Python (Space Optimized)
+
+```python
+def countWays(n, k):
+    mod = 10**9 + 7
+    
+    if n == 1:
+        return k
+    if n == 2:
+        return k * k
+    
+    prev2 = k
+    prev1 = k * k
+    
+    for i in range(3, n + 1):
+        ans = (prev1 + prev2) * (k - 1)
+        ans %= mod
+        prev2 = prev1
+        prev1 = ans
+    
+    return prev1
+```
+
+---
+
+# ⚠️ Edge Cases
+
+* n = 0 → usually return 0
+* n = 1 → return k
+* k = 1:
+
+  * If n > 2 → answer = 0
+  * Because 3 same colors will happen
+* Large n (10^5+) → must use O(1) space
+* Integer overflow → use long
+
+---
+
+# 🚨 Common Interview Traps
+
+* ❌ Forgetting modulo
+* ❌ Wrong base case for n=2
+* ❌ Using k*(k-1) instead of k²
+* ❌ Forgetting k=1 special case
+* ❌ Writing exponential recursion without memo
+
+---
+
+# 🔥 Pattern Recognition Tip
+
+This is similar to:
+
+* Fibonacci-style recurrence
+* Staircase DP
+* House Robber (state dependency)
+* Ways to Tile problem
+
+---
+
+# 📚 Related Problems to Practice
+
+* Climbing Stairs
+* Fibonacci Number
+* House Robber
+* Tiling Problem (2×n board)
+* Paint House
+* Paint House II
+* Decode Ways
+
+---
+
+# 🎯 Final Interview Summary (30-Second Recall)
+
+* Define dp[i] = ways to paint i posts
+* Base:
+
+  * dp[1] = k
+  * dp[2] = k²
+* Recurrence:
+
+  * dp[i] = (dp[i-1] + dp[i-2]) * (k-1)
+* Optimize space → store only last 2 values
+* Time → O(n)
+* Space → O(1)
+
+---
+
+If you can **derive the recurrence yourself in an interview**, you’re already ahead of 80% of candidates. 🔥
+
+If you'd like, I can also give you:
+
+* A dry run example
+* How to derive recurrence from scratch (interview whiteboard style)
+* Similar question with twist
+
+Let’s level this up 🚀
