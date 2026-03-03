@@ -1,0 +1,481 @@
+Alright Vicky 👊
+This is already a strong base. Now I’m going to convert it into **interview-ready, crystal-clear, revision-friendly notes** — the kind you revise 1 hour before a product-based interview.
+
+No fluff. Just depth. Let’s go.
+
+---
+
+# 🔥 0/1 Knapsack – Complete Interview Guide
+
+---
+
+# 1️⃣ Problem Statement
+
+You are given:
+
+* `N` items
+* Each item has:
+
+  * `weight[i]`
+  * `value[i]`
+* A knapsack with capacity `W`
+
+👉 You must **maximize total value** such that total weight ≤ `W`.
+
+⚠️ Each item can be taken **only once** (0 or 1).
+
+---
+
+### Example
+
+```
+W = 5
+Items:
+(1, 8)
+(2, 5)
+(4, 5)
+(5, 6)
+```
+
+Best choice:
+
+* Item 1 (1,8)
+* Item 3 (4,5)
+
+Total weight = 5
+Total value = **13** ✅
+
+---
+
+# 2️⃣ Core Intuition (This is what interviewers test)
+
+For every item, you have **two choices**:
+
+* ✅ Include it (if weight allows)
+* ❌ Exclude it
+
+This creates a **binary decision tree**.
+
+That’s your first signal:
+👉 This is a *Pick / Not Pick* problem
+👉 Likely recursion
+👉 Likely DP
+
+---
+
+# 3️⃣ Brute Force – Pure Recursion
+
+## 🧠 Idea
+
+Try every possible combination.
+
+Recursive function:
+
+```
+f(index, remainingCapacity)
+```
+
+### Choices:
+
+```
+exclude = f(index-1, W)
+
+include = value[index] + f(index-1, W - weight[index])
+           (only if weight[index] <= W)
+```
+
+Return:
+
+```
+max(include, exclude)
+```
+
+---
+
+## ✅ Base Cases
+
+* If `index < 0` → return 0
+* If `W == 0` → return 0
+
+---
+
+## ⏱ Time Complexity
+
+Each item → 2 choices
+
+```
+O(2^N)
+```
+
+Exponential ❌
+
+---
+
+## 💾 Space Complexity
+
+```
+O(N)  (recursion stack)
+```
+
+---
+
+## 🚨 Why It Fails?
+
+Because of **overlapping subproblems**.
+
+Same `(index, W)` gets computed many times.
+
+That’s your DP trigger 🚨
+
+---
+
+# 4️⃣ Memoization (Top-Down DP)
+
+## 🧠 Key Idea
+
+Store answers of already computed states.
+
+### DP State
+
+```
+dp[index][W]
+```
+
+Meaning:
+
+> Max value using items 0 → index with capacity W.
+
+---
+
+## Algorithm
+
+1. Create `dp[N][W+1]` initialized with -1
+2. Before solving a state:
+
+   ```
+   if dp[index][W] != -1 → return dp[index][W]
+   ```
+3. Store result after computing.
+
+---
+
+## ⏱ Time Complexity
+
+Number of states:
+
+```
+N * W
+```
+
+Each computed once.
+
+```
+O(NW)
+```
+
+---
+
+## 💾 Space Complexity
+
+```
+O(NW)   (dp table)
++ O(N)  (recursion stack)
+```
+
+---
+
+## 🔥 Why It Works?
+
+Because the problem has:
+
+* ✔ Overlapping Subproblems
+* ✔ Optimal Substructure
+
+---
+
+# 5️⃣ Tabulation (Bottom-Up)
+
+No recursion. Pure iterative DP.
+
+---
+
+## 🧠 DP Definition
+
+```
+dp[i][w]
+```
+
+= Max value using first `i` items with capacity `w`.
+
+---
+
+## Initialization
+
+First row:
+
+```
+if weight[0] <= w:
+    dp[0][w] = value[0]
+else:
+    dp[0][w] = 0
+```
+
+---
+
+## Transition
+
+For each item:
+
+```
+exclude = dp[i-1][w]
+
+include = value[i] + dp[i-1][w - weight[i]]
+          (if weight[i] <= w)
+
+dp[i][w] = max(include, exclude)
+```
+
+---
+
+## Final Answer
+
+```
+dp[N-1][W]
+```
+
+---
+
+## ⏱ Time Complexity
+
+```
+O(NW)
+```
+
+## 💾 Space Complexity
+
+```
+O(NW)
+```
+
+---
+
+# 6️⃣ Space Optimization (Most Asked in Interviews)
+
+Notice:
+
+We only use previous row.
+
+So we can use:
+
+```
+1D array of size W+1
+```
+
+---
+
+## 🔥 Correct Way (IMPORTANT)
+
+Loop capacity from:
+
+```
+W → weight[i]
+```
+
+### Why right to left?
+
+If you go left to right:
+You will reuse updated values from same row → WRONG answer ❌
+
+Right to left ensures:
+You use values from previous iteration.
+
+---
+
+## Code Logic
+
+```
+for each item:
+    for w = W down to weight[i]:
+        dp[w] = max(dp[w], value[i] + dp[w - weight[i]])
+```
+
+---
+
+## ⏱ Time Complexity
+
+```
+O(NW)
+```
+
+## 💾 Space Complexity
+
+```
+O(W)
+```
+
+This is the most optimized version ✅
+
+---
+
+# 7️⃣ Edge Cases (Interview Important 🚨)
+
+* W = 0 → answer = 0
+* N = 0 → answer = 0
+* All weights > W → answer = 0
+* Single item
+* Large W but small N
+* Duplicate weights
+* Values = 0
+
+---
+
+# 8️⃣ Common Mistakes
+
+❌ Iterating left to right in 1D DP
+❌ Using wrong DP dimensions
+❌ Forgetting base case initialization
+❌ Confusing 0/1 knapsack with Unbounded Knapsack
+❌ Not checking weight condition before include
+
+---
+
+# 9️⃣ Interview-Level Variations
+
+These are direct derivatives 👇
+
+### 1️⃣ Subset Sum
+
+Same as knapsack where:
+
+```
+value = weight
+```
+
+Return true/false.
+
+---
+
+### 2️⃣ Equal Partition
+
+Total sum must be even.
+Check subset sum = total/2.
+
+---
+
+### 3️⃣ Count Subsets with Given Sum
+
+Instead of max:
+Use addition:
+
+```
+dp[i][j] = include + exclude
+```
+
+---
+
+### 4️⃣ Minimum Subset Sum Difference
+
+Find subset sum closest to total/2.
+
+---
+
+### 5️⃣ Target Sum
+
+Convert into subset sum problem.
+
+---
+
+# 🔟 Advanced Insight (For Top Companies)
+
+If constraints are:
+
+```
+N ≤ 100
+W ≤ 10^5
+```
+
+DP works.
+
+If:
+
+```
+W ≤ 10^9
+N ≤ 100
+```
+
+Then we reverse state:
+
+DP on VALUE instead of WEIGHT.
+
+This is called **Knapsack by value** optimization.
+
+Very powerful trick.
+
+---
+
+# 🧩 Practice Problems (Increasing Difficulty)
+
+1. Subset Sum (Basic)
+2. Equal Sum Partition
+3. Count Subsets With Given Sum
+4. Target Sum (LeetCode)
+5. Minimum Subset Sum Difference
+6. 0/1 Knapsack (classic)
+
+---
+
+# 📝 Final Comparison Table
+
+| Approach     | Time   | Space | Interview Rating |
+| ------------ | ------ | ----- | ---------------- |
+| Recursion    | O(2^N) | O(N)  | ❌                |
+| Memoization  | O(NW)  | O(NW) | ⭐⭐               |
+| Tabulation   | O(NW)  | O(NW) | ⭐⭐⭐              |
+| 1D Optimized | O(NW)  | O(W)  | ⭐⭐⭐⭐             |
+
+---
+
+# ⚡ 60-Second Revision Cheat Sheet
+
+* Pick / Not Pick problem
+* State = (index, capacity)
+* Recursive formula:
+
+```
+max(
+    value[i] + f(i-1, W-weight[i]),
+    f(i-1, W)
+)
+```
+
+* Memoization → dp[N][W+1]
+* Tabulation → fill row by row
+* 1D optimization → iterate W → 0
+* Time = O(NW)
+* Space optimized = O(W)
+
+---
+
+# 🎯 Final Interview Advice
+
+If interviewer asks:
+
+“Can you optimize further?”
+
+Say:
+
+* “Yes, we can reduce space to O(W) using a single array by iterating capacity backwards.”
+
+That line alone shows maturity 💪
+
+---
+
+Vicky, this is a **Tier-1 company level understanding now**.
+
+If you want next:
+
+* I can give you **full C++ template**
+* Or we can solve 2–3 variations step-by-step
+* Or I can test you with an interview-style question
+
+Your move. 🚀

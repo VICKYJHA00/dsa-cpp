@@ -5,6 +5,8 @@
 #include<limits.h>
 #include<unordered_map>
 #include<list>
+#include<set>
+#include<queue>
 using namespace std;
 
 class Graph{
@@ -14,7 +16,7 @@ class Graph{
     void addEdge(int u, int v, int weight , bool direction){
         adj[u].push_back(make_pair(v, weight));
         if(direction == 0 ){
-            adj[v].push_back(make_pair(u,weight))
+            adj[v].push_back(make_pair(u,weight));
         }
     }
 
@@ -59,7 +61,7 @@ class Graph{
 };
 
 
-void diskstra(int src,vector<int> &distance ){
+void diskstra(Graph& g, int src, vector<int> &distance ){
     distance[src] = 0;
 
     priority_queue<pair<int,int>, 
@@ -76,7 +78,7 @@ void diskstra(int src,vector<int> &distance ){
 
         if(NodeDistance > distance[node]) continue;
 
-        for(auto neighbour : adj[node]){
+        for(auto neighbour : g.adj[node]){
             int v = neighbour.first;
             int weight = neighbour.second;
             if(distance[node] != INT_MAX && distance[node] + weight < distance[v]){
@@ -87,7 +89,7 @@ void diskstra(int src,vector<int> &distance ){
     }
 }
 
-int main(){P
+int main(){
     Graph g;
     g.addEdge(0,1,4,0);
     g.addEdge(0,2,1,0);
@@ -126,9 +128,9 @@ int main(){P
                 if(record != s.end()){
                     s.erase(record);
                 }
+                distance[neighbour.first] = nodeDistance + neighbour.second;
+                s.insert(make_pair(distance[neighbour.first],neighbour.first));
             }
-            distance[neighbour.first] = nodeDistance + neighbour.second;
-            s.insert(make_pair(distance[neighbour.first],neighbour.first));
         }
 
         
