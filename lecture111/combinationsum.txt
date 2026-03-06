@@ -1,0 +1,369 @@
+Great work collecting the raw content, Vicky. 👍
+Now I’ll **clean and structure it into proper revision notes** so it becomes something you can quickly review before contests or interviews.
+
+---
+
+# 📘 Dynamic Programming Notes
+
+## Combination Sum IV (Love Babbar – Lecture 111)
+
+---
+
+## 1️⃣ Problem Statement
+
+Given an array **`nums` of distinct integers** and a **target integer `target`**, return the **number of possible combinations** that add up to `target`.
+
+⚠️ **Important:**
+Different **orderings of the same numbers count as different combinations.**
+
+Example:
+
+```
+nums = [1,2,3]
+target = 4
+```
+
+Valid combinations:
+
+```
+1+1+1+1
+1+1+2
+1+2+1
+2+1+1
+2+2
+1+3
+3+1
+```
+
+Answer → **7**
+
+---
+
+# 🧠 Key Idea / Intuition
+
+Goal: Build the **target sum using given numbers** (unlimited supply).
+
+To compute ways for `target = T`:
+
+* Pick a number `num`
+* Reduce the problem to **T - num**
+
+So the total number of ways:
+
+```
+ways(T) = ways(T - num1) + ways(T - num2) + ...
+```
+
+Why DP?
+
+Because the same values like:
+
+```
+ways(3)
+ways(2)
+ways(1)
+```
+
+are calculated **multiple times** in recursion.
+
+Dynamic Programming **stores results** to avoid recomputation.
+
+---
+
+# 🔁 Recurrence Relation
+
+```
+dp[target] = Σ dp[target - num]
+```
+
+for every `num` in `nums` where:
+
+```
+target - num >= 0
+```
+
+---
+
+# ⚙️ Base Cases
+
+```
+if target == 0 → return 1
+```
+
+Reason:
+There is **one way to make sum 0** → choose nothing.
+
+```
+if target < 0 → return 0
+```
+
+Reason:
+Negative target is **invalid**.
+
+---
+
+# 🪜 Approach Breakdown
+
+---
+
+## 1️⃣ Recursion (Brute Force)
+
+Try every number for the current target.
+
+### Idea
+
+For each `num`:
+
+```
+solve(target) += solve(target - num)
+```
+
+### Code
+
+```cpp
+int solve(vector<int>& nums, int target) {
+
+    if(target == 0)
+        return 1;
+
+    if(target < 0)
+        return 0;
+
+    int ans = 0;
+
+    for(int i = 0; i < nums.size(); i++) {
+        ans += solve(nums, target - nums[i]);
+    }
+
+    return ans;
+}
+```
+
+⚠️ **Problem:**
+Too many repeated calls → **TLE**
+
+---
+
+# 2️⃣ Memoization (Top-Down DP)
+
+Store already computed results.
+
+### DP Definition
+
+```
+dp[t] = number of ways to form target t
+```
+
+### Code
+
+```cpp
+int solveMem(vector<int>& nums, int target, vector<int>& dp) {
+
+    if(target == 0)
+        return 1;
+
+    if(target < 0)
+        return 0;
+
+    if(dp[target] != -1)
+        return dp[target]; 
+
+
+    int ans = 0;
+
+    for(int i = 0; i < nums.size(); i++) {
+        ans += solveMem(nums, target - nums[i], dp);
+    }
+
+    dp[target] = ans;
+    return dp[target];
+}
+```
+
+---
+
+# 3️⃣ Tabulation (Bottom-Up DP)
+
+Instead of recursion, build the answer **from 0 → target**.
+
+### DP Table Meaning
+
+```
+dp[i] = number of ways to make sum i
+```
+
+### Initialization
+
+```
+dp[0] = 1
+```
+
+### Code
+
+```cpp
+int solveTab(vector<int>& nums, int target) {
+
+    vector<int> dp(target + 1, 0);
+
+    dp[0] = 1;
+
+    for(int i = 1; i <= target; i++) {
+
+        for(int j = 0; j < nums.size(); j++) {
+
+            if(i - nums[j] >= 0) {
+                dp[i] += dp[i - nums[j]];
+            }
+        }
+    }
+
+    return dp[target];
+}
+```
+
+---
+
+# 🚫 Space Optimization
+
+Not possible here.
+
+Reason:
+
+```
+dp[i] depends on multiple previous states
+dp[i-num1], dp[i-num2], dp[i-num3]
+```
+
+So we **cannot reduce to constant space**.
+
+---
+
+# ⏱ Time Complexity
+
+| Approach    | Complexity    |
+| ----------- | ------------- |
+| Recursion   | Exponential   |
+| Memoization | O(Target × N) |
+| Tabulation  | O(Target × N) |
+
+Where:
+
+```
+N = size of nums array
+```
+
+---
+
+# 💾 Space Complexity
+
+| Approach    | Space     |
+| ----------- | --------- |
+| Memoization | O(Target) |
+| Tabulation  | O(Target) |
+
+Plus recursion stack in memoization.
+
+---
+
+# 🔍 Pattern Recognition
+
+This problem follows the **Unbounded Knapsack / Combinatorics DP pattern**.
+
+Key property:
+
+```
+Each number can be used unlimited times
+```
+
+But **order matters**.
+
+---
+
+# 🔗 Similar Interview Problems
+
+Practice these next:
+
+1️⃣ Coin Change
+2️⃣ Coin Change II
+3️⃣ Target Sum
+4️⃣ Perfect Squares
+5️⃣ Minimum Coins
+
+---
+
+# 📌 Key Takeaways
+
+### 1️⃣ Ordering Matters
+
+Since order is counted as unique:
+
+```
+1 + 2 + 1
+2 + 1 + 1
+```
+
+are **different combinations**.
+
+Therefore in tabulation:
+
+```
+Outer loop → target
+Inner loop → numbers
+```
+
+---
+
+### 2️⃣ Unbounded Usage
+
+Numbers can be used **multiple times**.
+
+So we don't track used elements.
+
+---
+
+### 3️⃣ Watch for Overflow
+
+For very large targets:
+
+Use
+
+```cpp
+unsigned int
+```
+
+or
+
+```cpp
+long long
+```
+
+to avoid overflow.
+
+---
+
+# 🧾 Quick Revision Formula
+
+If you forget everything in an interview, remember this:
+
+```
+dp[0] = 1
+
+for i = 1 → target
+    for each num
+        if i-num >= 0
+            dp[i] += dp[i-num]
+```
+
+---
+
+✅ **Honest advice:**
+If you write notes like this for **15–20 DP problems**, your DP will become **very strong** for interviews.
+
+---
+
+If you want, I can also show you:
+
+🚀 **The 20 most important DP problems after Combination Sum IV**
+(from the Love Babbar playlist + LeetCode).
+
+Those problems basically **cover 80% of DP asked in placements.**
