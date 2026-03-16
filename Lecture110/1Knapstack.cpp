@@ -31,6 +31,8 @@ int solve1(vector<int> &weight,vector<int> &value, int n , int capacity , vector
          return 0;
     }
 
+
+    
     if(dp[n][capacity] != -1) return dp[n][capacity];
 
     int include = 0;
