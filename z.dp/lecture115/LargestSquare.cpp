@@ -3,7 +3,7 @@
 #include<algorithm>
 using namespace std;
 
-// ----- Recursion -----
+
 int solve(vector<vector<int>>& mat, int i, int j, int& maxi){
     if(i >= mat.size() || j >= mat[0].size()) return 0;
 
@@ -21,7 +21,7 @@ int solve(vector<vector<int>>& mat, int i, int j, int& maxi){
     }
 }
 
-// ----- Memoization -----
+
 int solveMem(vector<vector<int>>& mat, int i, int j, vector<vector<int>>& dp, int& maxi){
     if(i >= mat.size() || j >= mat[0].size()) return 0;
     if(dp[i][j] != -1) return dp[i][j];
@@ -48,7 +48,7 @@ int memorization(vector<vector<int>>& mat){
     return maxi;
 }
 
-// ----- Tabulation -----
+
 int tabulation(vector<vector<int>>& mat){
     int maxi = 0, rows = mat.size(), cols = mat[0].size();
     vector<vector<int>> dp(rows + 1, vector<int>(cols + 1, 0));
@@ -71,7 +71,7 @@ int tabulation(vector<vector<int>>& mat){
     return maxi;
 }
 
-// ----- Space Optimized -----
+
 int spaceOptimized(vector<vector<int>>& mat){
     int maxi = 0, rows = mat.size(), cols = mat[0].size();
     vector<int> curr(cols + 1, 0), next(cols + 1, 0);
@@ -96,9 +96,7 @@ int spaceOptimized(vector<vector<int>>& mat){
 }
 
 int main(){
-    vector<vector<int>> mat = {{0, 1, 1, 0},
-                               {1, 1, 1, 0},
-                               {0, 1, 1, 1}};
+    vector<vector<int>> mat = {{0, 1, 1, 0},{1, 1, 1, 0},{0, 1, 1, 1}};
 
     int maxi = 0;
     cout << "Longest square submatrix of 1s (Recursion): " << solve(mat, 0, 0, maxi) << endl;

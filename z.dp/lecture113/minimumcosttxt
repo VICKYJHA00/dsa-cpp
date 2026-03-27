@@ -1,0 +1,234 @@
+---
+
+# 🧠 Minimum Cost for Tickets (Part 2) — Space Optimized DP
+
+---
+
+## 📌 Problem Summary
+
+You are given:
+
+* `days[]` → travel days
+* `costs[]` → cost of:
+
+  * 1-day pass
+  * 7-day pass
+  * 30-day pass
+
+🎯 **Goal:** Find the minimum cost to cover all travel days.
+
+---
+
+## 🔁 Previous Approaches Recap
+
+| Approach               | Idea                          | Time          | Space |
+| ---------------------- | ----------------------------- | ------------- | ----- |
+| Brute Force            | Try all combinations          | Exponential ❌ | High  |
+| Memoization (Top-Down) | Cache overlapping subproblems | O(n) ✅        | O(n)  |
+| Tabulation (Bottom-Up) | Build DP array                | O(n) ✅        | O(n)  |
+
+---
+
+## 🚀 Optimization Goal
+
+👉 Reduce **Space Complexity from O(n) → O(1)**
+
+💡 Key idea:
+We **don’t need full DP array**, only recent valid passes matter.
+
+---
+
+## 🔑 Core Idea: Sliding Window using Queues
+
+We maintain **2 queues**:
+
+### 1️⃣ Weekly Pass Queue
+
+* Stores: `(day, cost)`
+* Valid for **7 days**
+
+### 2️⃣ Monthly Pass Queue
+
+* Stores: `(day, cost)`
+* Valid for **30 days**
+
+---
+
+## ⚙️ Why This Works
+
+* A 7-day pass → only affects next **7 days**
+* A 30-day pass → only affects next **30 days**
+
+👉 So queues will never exceed:
+
+* **7 elements (weekly)**
+* **30 elements (monthly)**
+
+✅ Hence: **Space = O(1)**
+
+---
+
+## 🪜 Algorithm Steps
+
+### Step 1: Initialize
+
+```cpp
+ans = 0
+weekly = queue<pair<int,int>>
+monthly = queue<pair<int,int>>
+```
+
+---
+
+### Step 2: Iterate through each travel day
+
+```cpp
+for(day : days)
+```
+
+---
+
+### Step 3: Remove Expired Passes
+
+```cpp
+while(!weekly.empty() && weekly.front().first + 7 <= day)
+    weekly.pop()
+
+while(!monthly.empty() && monthly.front().first + 30 <= day)
+    monthly.pop()
+```
+
+🧠 Meaning:
+
+* Remove passes that **can’t cover current day**
+
+---
+
+### Step 4: Add New Pass Options
+
+```cpp
+weekly.push({day, ans + cost[1]})
+monthly.push({day, ans + cost[2]})
+```
+
+⚠️ Important:
+
+* Use **`ans + cost`**, not just `cost`
+* Because we need **total accumulated cost**
+
+---
+
+### Step 5: Compute Minimum Cost
+
+```cpp
+ans = min({
+    ans + cost[0],           // 1-day pass
+    weekly.front().second,   // 7-day pass
+    monthly.front().second   // 30-day pass
+})
+```
+
+---
+
+## 🧾 Final Code (Clean)
+
+```cpp
+int mincostTickets(vector<int>& days, vector<int>& cost) {
+    queue<pair<int,int>> weekly, monthly;
+    int ans = 0;
+
+    for(int day : days) {
+
+        // remove expired weekly passes
+        while(!weekly.empty() && weekly.front().first + 7 <= day)
+            weekly.pop();
+
+        // remove expired monthly passes
+        while(!monthly.empty() && monthly.front().first + 30 <= day)
+            monthly.pop();
+
+        // add new passes
+        weekly.push({day, ans + cost[1]});
+        monthly.push({day, ans + cost[2]});
+
+        // choose minimum cost
+        ans = min({
+            ans + cost[0],
+            weekly.front().second,
+            monthly.front().second
+        });
+    }
+
+    return ans;
+}
+```
+
+---
+
+## ⏱️ Complexity Analysis
+
+### 🕒 Time Complexity: **O(n)**
+
+* Each day processed once
+* Each element pushed/popped once
+
+---
+
+### 💾 Space Complexity: **O(1)**
+
+* Queue sizes are bounded:
+
+  * max 7 (weekly)
+  * max 30 (monthly)
+
+---
+
+## 🧠 Key Insights (Interview Gold 🔥)
+
+* You **don’t always need full DP array**
+* Use **sliding window + queues** for optimization
+* Store:
+
+  ```
+  (start_day, total_cost_until_now)
+  ```
+* Always maintain **valid window**
+
+---
+
+## ⚠️ Common Mistakes
+
+❌ Using only `cost[i]` instead of `ans + cost[i]`
+❌ Not removing expired passes
+❌ Thinking this is greedy (it’s still DP!)
+
+---
+
+## 🎯 When to Use This Pattern
+
+Use this approach when:
+
+* DP depends on **recent range (window)**
+* Range is **bounded (like 7 or 30 days)**
+* You can **discard old states**
+
+---
+
+## 🧩 Final Intuition
+
+👉 At every day, you’re asking:
+
+> “What’s the cheapest way to reach here using valid passes?”
+
+Instead of remembering everything,
+you only remember **what still matters**.
+
+---
+
+If you want next level mastery 💪
+I can:
+
+* Compare this with **0/1 Knapsack thinking**
+* Or give you **similar interview problems** (same pattern)
+
+Just say 👍
