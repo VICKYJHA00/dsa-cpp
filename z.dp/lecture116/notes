@@ -1,0 +1,97 @@
+Perfect 👍 — now we’re talking like a real student preparing **NC (notebook) notes** 📒
+Short, clean, revision-friendly.
+
+---
+
+# 🧠 Minimum Score Triangulation (Short Notes)
+
+---
+
+## 📌 Problem
+
+Given polygon with `N` vertices → divide into triangles
+👉 Minimize total score
+
+### 🧮 Score:
+
+```
+(i, j, k) → v[i] * v[j] * v[k]
+```
+
+---
+
+## 🧠 Type
+
+👉 **Partition DP (MCM pattern)**
+
+---
+
+## ⚙️ Base Case
+
+```
+if (j - i < 2) → 0   // no triangle
+```
+
+---
+
+## 🔁 Recurrence
+
+```
+solve(i, j) = min(
+  v[i]*v[k]*v[j] + solve(i, k) + solve(k, j)
+)
+for i < k < j
+```
+
+---
+
+## 💡 Idea
+
+* Fix `(i, j)`
+* Try all `k`
+* Split → left + right
+
+---
+
+## 🧩 DP Approaches
+
+### 1. Memoization
+
+* Recursion + dp[][]
+
+### 2. Tabulation
+
+* Fill dp from small → large
+
+---
+
+## ⏱️ Complexity
+
+* Time → **O(N³)**
+* Space → **O(N²)**
+
+---
+
+## 🔗 Related
+
+* Matrix Chain Multiplication
+* Catalan Numbers
+
+---
+
+## 🔥 Key Points
+
+* Same pattern as MCM
+* Choose `k` as partition
+* Add cost + subproblems
+
+---
+
+## 🏁 Tip
+
+👉 Practice dry run + code once without seeing
+
+---
+
+If you want, I can make:
+👉 **1-page DP cheat sheet (all patterns)** — super useful before exams 🚀
