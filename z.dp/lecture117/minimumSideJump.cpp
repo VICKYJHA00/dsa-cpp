@@ -21,6 +21,7 @@ int recursion(vector<int>& v,int currlane,int currpos){
 int memorization(vector<int>& v,int currlane,int currpos,vector<vector<int>>& dp){
     int n = v.size()-1;
     if(currpos == n) return 0;
+    if(dp[currlane][currpos] != -1) return dp[currlane][currpos];
     if(v[currpos+1] != currlane) return memorization(v,currlane,currpos+1,dp);
     else{
         int ans = INT_MAX;
