@@ -60,6 +60,31 @@ int tabulation(vector<int>& v){
     return min({dp[1][0],1+dp[2][0],1+dp[3][0]});
 }
 
+int spaceOptimization(vector<int>& v){
+    int n = v.size()-1;
+    vector<int> curr(4,INT_MAX);
+    vector<int> next(4,0);
+
+
+    for(int currpos = n-1;currpos>=0;currpos--){
+        for(int currlane = 1;currlane<=3;currlane++){
+            if(v[currpos+1] != currlane) curr[currlane] = next[currlane];
+            else{
+                int ans = 1e9;
+                for(int i = 1;i<=3;i++){
+                    if(i != currlane && v[currpos] != i){
+                        ans = min(ans,1+next[i]);  // tthis is so important, we have to move to next position after side jump, otherwise we will be in infinite loop
+                    }
+                }
+                curr[currlane] = ans;
+            }
+        }
+        next = curr;
+    }
+    return min({curr[1],1+curr[2],1+curr[3]});
+}
+
+
 int main(){
     vector<int> v = {0,1,2,3,0};
     vector<vector<int>> dp(4,vector<int>(v.size(),-1));
@@ -67,6 +92,7 @@ int main(){
     cout<<recursion(v,2,0)<<endl;
     cout<<memorization(v,2,0,dp)<<endl;
     cout<<tabulation(v)<<endl;
+    cout<<spaceOptimization(v)<<endl;
     return 0;
 
 }
