@@ -34,12 +34,39 @@ int memorization(vector<int>& v,int currlane,int currpos,vector<vector<int>>& dp
     }
 }
 
+int tabulation(vector<int>& v){
+    int n = v.size()-1;
+    vector<vector<int>> dp(4,vector<int>(v.size(),INT_MAX));
+
+    dp[0][n] = 0;
+    dp[1][n] = 0;
+    dp[2][n] = 0;
+    dp[3][n] = 0;
+
+    for(int currpos = n-1;currpos>=0;currpos--){
+        for(int currlane = 1;currlane<=3;currlane++){
+            if(v[currpos+1] != currlane) dp[currlane][currpos] = dp[currlane][currpos+1];
+            else{
+                int ans = INT_MAX;
+                for(int i = 1;i<=3;i++){
+                    if(i != currlane && v[currpos] != i){
+                        ans = min(ans,1+dp[i][currpos+1]);  // tthis is so important, we have to move to next position after side jump, otherwise we will be in infinite loop
+                    }
+                }
+                dp[currlane][currpos] = ans;
+            }
+        }
+    }
+    return min({dp[1][0],1+dp[2][0],1+dp[3][0]});
+}
+
 int main(){
     vector<int> v = {0,1,2,3,0};
     vector<vector<int>> dp(4,vector<int>(v.size(),-1));
     
     cout<<recursion(v,2,0)<<endl;
     cout<<memorization(v,2,0,dp)<<endl;
+    cout<<tabulation(v)<<endl;
     return 0;
 
 }
