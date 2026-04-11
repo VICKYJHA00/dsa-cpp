@@ -1,0 +1,240 @@
+
+
+# 🧠 DP Notes — Reducing Dishes
+
+---
+
+## 📌 Problem Idea
+
+We are given an array `satisfaction[]` where each value tells how much satisfaction a dish gives.
+
+We need to **maximize total like-time coefficient**, where:
+
+* time starts from 1
+* if we pick a dish → contribution = `time * satisfaction[i]`
+* we can skip any dish
+* order matters
+
+---
+
+## 💡 First Important Observation
+
+👉 Sorting is necessary
+
+```cpp
+sort(satisfaction.begin(), satisfaction.end());
+```
+
+Why?
+
+* Negative values hurt if taken early
+* But if we delay them (by placing after some dishes), their impact can improve
+* Sorting helps us make better decisions consistently
+
+---
+
+## ⚡ Core Thinking
+
+At every index, we basically decide:
+
+* take the dish
+* skip the dish
+
+So it’s a classic **include / exclude DP**
+
+---
+
+## 🧠 Recursive Approach
+
+Define function:
+
+```cpp
+solve(index, time)
+```
+
+Meaning:
+
+* `index` → current dish
+* `time` → current multiplier
+
+---
+
+### Choices:
+
+```cpp
+include = satisfaction[index] * time + solve(index+1, time+1)
+exclude = solve(index+1, time)
+```
+
+Return:
+
+```cpp
+max(include, exclude)
+```
+
+---
+
+### Base Case:
+
+```cpp
+if(index == n) return 0;
+```
+
+---
+
+## 🚀 Memoization
+
+Problem with recursion:
+
+* same states repeat
+
+So we store results in:
+
+```cpp
+dp[index][time]
+```
+
+Check before computing:
+
+```cpp
+if(dp[index][time] != -1) return dp[index][time];
+```
+
+---
+
+### Complexity:
+
+* Time: O(n²)
+* Space: O(n²)
+
+---
+
+## 📦 Tabulation (Bottom-Up)
+
+Instead of recursion, we build answer from bottom.
+
+We create:
+
+```cpp
+dp[n+1][n+1]
+```
+
+---
+
+### Loop:
+
+```cpp
+for(int index = n-1; index >= 0; index--) {
+    for(int time = index; time >= 0; time--) {
+        int include = satisfaction[index] * (time+1) + dp[index+1][time+1];
+        int exclude = dp[index+1][time];
+
+        dp[index][time] = max(include, exclude);
+    }
+}
+```
+
+---
+
+### Final Answer:
+
+```cpp
+dp[0][0]
+```
+
+---
+
+## 🧊 Space Optimization
+
+Observation:
+
+* current row depends only on next row
+
+So instead of full DP table, use 2 arrays:
+
+```cpp
+vector<int> curr(n+1), next(n+1);
+```
+
+---
+
+### Code idea:
+
+```cpp
+for(int index = n-1; index >= 0; index--) {
+    for(int time = index; time >= 0; time--) {
+        int include = satisfaction[index] * (time+1) + next[time+1];
+        int exclude = next[time];
+
+        curr[time] = max(include, exclude);
+    }
+    next = curr;
+}
+```
+
+---
+
+## 🔥 Greedy Insight (Best Optimization)
+
+Instead of DP, we can solve it greedily.
+
+### Idea:
+
+* Traverse from right (largest values)
+* Keep adding dishes only if total stays positive
+
+---
+
+### Code:
+
+```cpp
+sort(satisfaction.begin(), satisfaction.end());
+
+int sum = 0, total = 0;
+
+for(int i = n-1; i >= 0; i--) {
+    sum += satisfaction[i];
+
+    if(sum > 0) {
+        total += sum;
+    } else {
+        break;
+    }
+}
+```
+
+---
+
+### Complexity:
+
+* Time: O(n log n)
+* Space: O(1)
+
+---
+
+## 🎯 Key Points to Remember
+
+* Always try **include/exclude** when choices exist
+* Define clear **state (index, time)**
+* Think recursion first → then optimize
+* Sorting can change the whole problem
+* Always check if greedy is possible after DP
+
+---
+
+## 💭 Personal Notes (important)
+
+* This problem looks hard but breaks into simple steps
+* Biggest learning = how to convert recursion → DP
+* Also learned that DP is not always final solution (greedy can be better)
+
+---
+
+## 🔥 What to do after this
+
+* Code all approaches yourself
+* Do a dry run once
+* Try similar problems (knapsack-type)
+
+---
+
