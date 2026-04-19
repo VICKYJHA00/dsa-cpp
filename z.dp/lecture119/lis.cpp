@@ -51,10 +51,39 @@ int tabulation(vector<int>& nums) {
     return dp[0][0];
 }
 
+ int solve1(vector<int>& nums){
+        int n = nums.size();
+
+        vector<int> curr(n+1, 0);
+        vector<int> next(n+1, 0);
+
+        for(int i = n-1; i >= 0; i--){
+            for(int j = i-1; j >= -1; j--){
+
+                int exclude = next[j+1];
+
+                int include = 0;
+                if(j == -1 || nums[i] > nums[j]){
+                    include = 1 + next[i+1];
+                }
+
+                curr[j+1] = max(include, exclude);
+            }
+            next = curr;  
+        }
+
+        return next[0];
+    }
+
+    int SO(vector<int>& nums) {
+        return solve1(nums);
+    }
+
 
 int main() {
     vector<int> nums = {10,9,2,5,3,7,101,18};
     cout << lengthOfLIS(nums) << endl;  // Output: 4
     cout <<tabulation(nums) << endl;  // Output: 4
+    cout << SO(nums) << endl;  // Output: 4
     return 0;
 }
