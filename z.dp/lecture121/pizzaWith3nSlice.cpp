@@ -57,13 +57,51 @@ int maxSizeSlicesTab(vector<int>& slices) {
 
 }
 
+int solveSpaceOpt(vector<int> &slices){
+    int k = slices.size();
+
+    // Case 1: [0 ... k-2]
+    vector<int> next(k+2,0), next2(k+2,0), curr(k+2,0);
+
+    for(int i = k-2; i >= 0; i--){
+        for(int n = 1; n <= k/3; n++){
+            int take = slices[i] + next2[n-1];
+            int nottake = next[n];
+            curr[n] = max(take, nottake);
+        }
+        next2 = next;
+        next = curr;
+    }
+
+    int case1 = next[k/3];
+
+    // Case 2: [1 ... k-1]
+    vector<int> nextA(k+2,0), next2A(k+2,0), currA(k+2,0);
+
+    for(int i = k-1; i >= 1; i--){
+        for(int n = 1; n <= k/3; n++){
+            int take = slices[i] + next2A[n-1];
+            int nottake = nextA[n];
+            currA[n] = max(take, nottake);
+        }
+        next2A = nextA;
+        nextA = currA;
+    }
+
+    int case2 = nextA[k/3];
+
+    return max(case1, case2);
+}
+
 int main(){
     vector<int> slices = {1, 2, 3, 4, 5, 6};
     int memorizationAns =  maxSizeSlices(slices);
     int tabultationAns = maxSizeSlicesTab(slices);
+    int spaceOptAns = solveSpaceOpt(slices);
 
     cout<<"The ans from the Memorization is : "<<memorizationAns<<endl;
     cout<<"The ans from the Tabulation is : "<<tabultationAns<<endl;
+    cout<<"The ans from the Space Optimization is : "<<spaceOptAns<<endl;
     return 0;
 
 }
