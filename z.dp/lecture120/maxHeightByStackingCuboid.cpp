@@ -36,7 +36,6 @@ using namespace std;
         return maxi;
     }
 
-int main(){
     vector<vector<int>> cuboids = {{50,45,20},{95,37,53},{45,23,12}};
     cout<<maxHeight(cuboids)<<endl;
     return 0;
