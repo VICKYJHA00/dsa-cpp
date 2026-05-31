@@ -108,6 +108,66 @@ public:
     }
 };
 
+// =====================
+// space optimized Tabulation Solution
+// =====================
+class Solution {
+public:
+    int minSwap(vector<int>& nums1, vector<int>& nums2) {
+        nums1.insert(nums1.begin(), INT_MIN);
+        nums2.insert(nums2.begin(), INT_MIN);
+
+        int n = nums1.size();
+
+        int nextSwap = 0;
+        int nextNoSwap = 0;
+
+        const int INF = 1e9;
+
+        for (int index = n - 1; index >= 1; index--) {
+
+            int currSwap = INF;
+            int currNoSwap = INF;
+
+            for (int swapped = 1; swapped >= 0; swapped--) {
+
+                int prev1 = nums1[index - 1];
+                int prev2 = nums2[index - 1];
+
+                if (swapped) {
+                    swap(prev1, prev2);
+                }
+
+                int ans = INF;
+
+                // no swap
+                if (nums1[index] > prev1 &&
+                    nums2[index] > prev2) {
+
+                    ans = nextNoSwap;
+                }
+
+                // swap
+                if (nums1[index] > prev2 &&
+                    nums2[index] > prev1) {
+
+                    ans = min(ans, 1 + nextSwap);
+                }
+
+                if (swapped)
+                    currSwap = ans;
+                else
+                    currNoSwap = ans;
+            }
+
+            nextSwap = currSwap;
+            nextNoSwap = currNoSwap;
+        }
+
+        return nextNoSwap;
+    }
+};
+
 
 int main(){
     vector<int> nums1 = {1,3,5,4};
@@ -118,5 +178,6 @@ int main(){
     cout << "Recursive Solution: " << solRecursion.minSwapRecursion(nums1,nums2) << endl;
     cout << "Memoization Solution: " << sol.minSwapMemoization(nums1,nums2) << endl; // Output: 1
     cout << "Tabulation Solution: " << solTabulation.minSwap(nums1,nums2) << endl; // Output: 1
+    cout << "Space Optimized Solution: " << sol.minSwap(nums1,nums2) << endl; // Output: 1
     return 0;
 }
