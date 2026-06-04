@@ -1,3 +1,6 @@
+#include<bits/stdc++.h>
+using namespace std;
+
 class Solution {
 public:
     int solve(int start,int end,vector<vector<int>>& dp){
@@ -34,3 +37,9 @@ public:
         return dp[1][n];
     }
 };
+
+int main(){
+    Solution s;
+    s.getMoneyAmount1(10);
+    cout<<s.getMoneyAmount(10)<<endl;
+}
