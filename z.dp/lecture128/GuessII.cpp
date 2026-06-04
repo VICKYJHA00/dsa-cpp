@@ -40,6 +40,6 @@ public:
 
 int main(){
     Solution s;
-    s.getMoneyAmount1(10);
+    cout<<s.getMoneyAmount1(10)<<endl;
     cout<<s.getMoneyAmount(10)<<endl;
 }
