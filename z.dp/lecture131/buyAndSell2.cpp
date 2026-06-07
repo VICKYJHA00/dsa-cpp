@@ -51,6 +51,32 @@ public:
     }
 };
 
+class spaceOptimization {
+public:
+    int maxProfit(vector<int>& prices) {
+        vector<int> curr(2,0);
+        vector<int> next(2,0);
+        for(int index = prices.size()-1;index>=0;index--){
+            for(int n = 0;n<=1;n++){
+                int profit = 0;
+                if(n){
+                    int include = -prices[index]+next[0];
+                    int exclude = next[1];
+                    profit = max(include,exclude);
+                }else{
+                    int include = prices[index] + next[1];
+                    int exclude = next[0];
+                    profit = max(include,exclude);
+                }
+
+                curr[n] = profit;
+            }
+            next = curr;
+        }
+        return next[1];
+    }
+};
+
 int main() {
     vector<int> prices = {7,1,5,3,6,4};
     Solution s;
