@@ -27,6 +27,30 @@ public:
     }
 };
 
+class tabulation {
+public:
+    int maxProfit(vector<int>& prices) {
+        vector<vector<int>> dp(prices.size()+1,vector<int>(2,0));
+        for(int index = prices.size()-1;index>=0;index--){
+            for(int n = 0;n<=1;n++){
+                int profit = 0;
+                if(n){
+                    int include = -prices[index]+dp[index+1][0];
+                    int exclude = dp[index+1][1];
+                    profit = max(include,exclude);
+                }else{
+                    int include = prices[index] + dp[index+1][1];
+                    int exclude = dp[index+1][0];
+                    profit = max(include,exclude);
+                }
+
+                dp[index][n] = profit;
+            }
+        }
+        return dp[0][1];
+    }
+};
+
 int main() {
     vector<int> prices = {7,1,5,3,6,4};
     Solution s;
