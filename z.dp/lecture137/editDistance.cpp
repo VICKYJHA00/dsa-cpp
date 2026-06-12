@@ -58,13 +58,50 @@ public:
     }
 };
 
+class spaceOptimised {
+public:
+    int minDistance(string word1, string word2) {
+        int n = word1.length();
+        int m = word2.length(); 
+        vector<int> curr(m+1,0);
+        vector<int> next(m+1,0);
+        for(int j = 0;j<=m;j++){
+            next[j] = m-j;
+        }
+
+        for(int i = n-1;i>= 0;i--){
+            curr[m] = n-i;
+            for(int j = m-1;j>= 0;j--){
+                
+                int len = 0;
+                if(word1[i] == word2[j]){
+                    len = next[j+1];
+                }else{
+                    int delet = 1 + curr[j+1];
+                    int insert = 1 + next[j];
+                    int replace = 1 + next[j+1];
+
+                    len = min(delet,min(insert,replace));
+                }
+                curr[j]= len;
+            }
+            next = curr;
+        }
+
+        return next[0];
+    }
+};
+
 int main() {
     string word1 = "intention";
     string word2 = "execution";
     Solution sol;
     tabulation t;
+    spaceOptimised s;
     cout<<"The minimum operations to match the string is :"<<sol.minDistance(word1,word2);
     cout<<endl;
     cout<<"The minimum operations to match the string is using tabulation :"<<t.minDistance(word1,word2);
+    cout<<endl;
+    cout<<"The minimum operations to match the string is using space optimised :"<<s.minDistance(word1,word2);
     return 0;
 }
